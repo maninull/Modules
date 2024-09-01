@@ -1,22 +1,31 @@
 local idk = {}
-
-local Players = game:GetService("Players")
-
-local Services = {
-    game:GetService('AdService'),
-    game:GetService('SocialService')
-}
-
 function idk.isAlive(Entity)
-    return Entity.Character and workspace.Alive:FindFirstChild(Entity.Name) and workspace.Alive:FindFirstChild(Entity.Name).Humanoid.Health > 0
+    if not Entity.Character then
+        return false
+    end
+
+    local aliveFolder = workspace:FindFirstChild("Alive")
+    if aliveFolder then
+        local aliveEntity = aliveFolder:FindFirstChild(Entity.Name)
+        return aliveEntity and aliveEntity:FindFirstChild("Humanoid") and aliveEntity.Humanoid.Health > 0
+    end
+
+    return false
 end
 
 function idk.getBall()
-    for index, ball in workspace:WaitForChild("Balls"):GetChildren() do
+    local ballsFolder = workspace:WaitForChild("Balls")
+    if not ballsFolder then
+        return nil
+    end
+
+    for _, ball in ipairs(ballsFolder:GetChildren()) do
         if ball:IsA("BasePart") and ball:GetAttribute("realBall") then
             return ball
         end
     end
+
+    return nil
 end
 
 return idk;
